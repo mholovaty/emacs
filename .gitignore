@@ -1,0 +1,10 @@
+*.elc
+*~
+
+auto-save-list/
+auto-save/
+eshell
+
+history
+tramp
+.emacs.desktop
