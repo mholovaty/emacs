@@ -11,3 +11,4 @@ tramp
 elpa/archives/melpa-stable/archive-contents
 elpa/archives/gnu/archive-contents
 elpa/archives/gnu/archive-contents.signed
+/.emacs.desktop.lock
