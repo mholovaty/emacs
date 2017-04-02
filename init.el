@@ -31,6 +31,9 @@
  kept-old-versions 2
  version-control t)
 
+;; Local info
+(push "/usr/local/share/info" Info-directory-list)
+
 ;; History
 (setq savehist-additional-variables
       '(kill-ring search-ring regexp-search-ring))
@@ -70,3 +73,14 @@
 ;; Hide dired details by default
 (add-hook 'dired-mode-hook
 	  (lambda () (dired-hide-details-mode 1)))
+
+;; geiser
+(setq geiser-active-implementations '(guile))
+
+;; custom generated
+(custom-set-variables
+ '(package-selected-packages
+   (quote
+    (paredit geiser markdown-mode magit dockerfile-mode))))
+
+(custom-set-faces)
