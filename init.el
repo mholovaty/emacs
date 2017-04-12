@@ -50,6 +50,9 @@
 ;; Start-up screen is off
 (setq inhibit-startup-message t)
 
+;; Confirmation on exit
+(setq confirm-kill-emacs 'y-or-n-p)
+
 ;; Scratch buffer is text-mode
 (setq initial-major-mode 'text-mode)
 (setq initial-scratch-message "")
