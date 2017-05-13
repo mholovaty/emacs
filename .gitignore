@@ -1,5 +1,6 @@
 *.elc
 *~
+*.py[cod]
 
 auto-save-list/
 auto-save/
