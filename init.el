@@ -60,6 +60,12 @@
 ;; Show matching parens
 (show-paren-mode 1)
 
+;; linum
+(setq linum-format "%d ")
+
+;; CC modes
+(setq-default c-basic-offset 4)
+
 ;; nxlm-mode
 ;; 4 space ident
 (setq nxml-child-indent 4 nxml-attribute-indent 4)
