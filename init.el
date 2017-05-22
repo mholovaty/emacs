@@ -82,6 +82,8 @@
 ;; Hide dired details by default
 (add-hook 'dired-mode-hook
 	  (lambda () (dired-hide-details-mode 1)))
+;; Sort directories first
+(setq dired-listing-switches "-aBhl  --group-directories-first")
 
 ;; geiser
 (setq geiser-active-implementations '(guile))
