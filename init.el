@@ -80,6 +80,10 @@
 ;; Change from C-c ^ to C-c v
 (setq smerge-command-prefix "\C-cv")
 
+;; magit
+;; show 2 ediff windows, not 3
+(setq magit-ediff-dwim-show-on-hunks t)
+
 ;; dired-mode
 ;; Hide dired details by default
 (add-hook 'dired-mode-hook
