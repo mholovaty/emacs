@@ -6,6 +6,13 @@
 	     '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (package-initialize)
 
+;; use-package
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+
 ;; Auto-load configuration
 (defun load-directory (directory)
   "Load recursively all `.el' files in DIRECTORY."
@@ -94,10 +101,68 @@
 ;; geiser
 (setq geiser-active-implementations '(guile))
 
+;; shell mode fix
+(defun my-resize-window ()
+  "Reset the COLUMNS environment variable to the current width of the window."
+  (interactive)
+  (let ((proc (get-buffer-process (current-buffer)))
+	(str (format "export COLUMNS=%s" (window-width))))
+    (funcall comint-input-sender proc str)))
+
+(defun my-shell-mode-hook ()
+  (local-set-key "\C-cw" 'my-resize-window))
+
+;; python-mode
+(use-package python-mode
+	     :mode ("\\.py\\'" . python-mode)
+	     :init
+	     (add-hook 'python-mode-hook #'elpy-mode)
+	     (add-hook 'python-mode-hook #'elpy-enable)
+	     (add-hook 'python-mode-hook #'hs-minor-mode))
+
+;; disable python indent guessing
+(setq python-indent-guess-indent-offset nil)
+
+(use-package elpy
+  :init
+  (setq elpy-rpc-python-command "python3.6")
+  (setq python-shell-interpreter "ipython3"
+	python-shell-interpreter-args "-i --simple-prompt")
+  ;; (setq elpy-rpc-backend "jedi")
+  ;; (setq elpy-modules '(elpy-module-company
+  ;; 		       elpy-module-eldoc
+  ;; 		       elpy-module-sane-defaults
+  ;; 		       elpy-module-pyvenv))
+  )
+
+;; hs-minor-mode
+(global-set-key (kbd "C-c [") 'hs-hide-block)
+(global-set-key (kbd "C-c ]") 'hs-show-block)
+(global-set-key (kbd "C-c -") 'hs-hide-all)
+(global-set-key (kbd "C-c =") 'hs-show-all)
+(global-set-key (kbd "C-c 0") 'hs-hide-level)
+
+;; hard-code black background
+(set-background-color "black")
+
 ;; custom generated
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(elpy-test-nose-runner-command (quote ("nosetests --nocapture --nologcapture")))
+ '(elpy-test-runner (quote elpy-test-pytest-runner))
  '(package-selected-packages
    (quote
-    (paredit geiser markdown-mode magit dockerfile-mode))))
+    (cmake-project neotree elpy paredit geiser markdown-mode magit dockerfile-mode))))
 
-(custom-set-faces)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ediff-even-diff-A ((t (:background "brightblack"))))
+ '(ediff-even-diff-B ((t (:background "brightblack"))))
+ '(ediff-odd-diff-A ((t (:background "brightblack"))))
+ '(ediff-odd-diff-B ((t (:background "brightblack")))))
