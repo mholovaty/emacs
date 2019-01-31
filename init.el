@@ -66,9 +66,11 @@
 ;; CC modes
 (setq-default c-basic-offset 4)
 
-;; nxlm-mode
+;; nxml-mode
 ;; 4 space ident
 (setq nxml-child-indent 4 nxml-attribute-indent 4)
+;; Disable validation as workaround to memory leaking
+(setq rng-nxml-auto-validate-flag nil)
 
 ;; sh-mode
 ;; space only ident
