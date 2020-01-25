@@ -155,7 +155,7 @@
  '(elpy-test-runner (quote elpy-test-pytest-runner))
  '(package-selected-packages
    (quote
-    (cmake-project neotree elpy paredit geiser markdown-mode magit dockerfile-mode))))
+    (xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree elpy paredit geiser markdown-mode magit dockerfile-mode))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
