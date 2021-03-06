@@ -29,6 +29,11 @@
 
 (load-directory "~/.emacs.d/config")
 
+;; Run server
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Emacs-Server.html
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
+(server-start)
+
 ;; Backup directory
 (setq
  backup-by-copying t
