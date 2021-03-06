@@ -79,7 +79,9 @@
 (setq column-number-mode t)
 
 ;; CC modes
-(setq-default c-basic-offset 4)
+(setq-default
+ c-default-style "linux"
+ c-basic-offset 4)
 
 ;; nxml-mode
 ;; 4 space ident
