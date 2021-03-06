@@ -70,6 +70,9 @@
 ;; linum
 (setq linum-format "%d ")
 
+;; Display current culumn number
+(setq column-number-mode t)
+
 ;; CC modes
 (setq-default c-basic-offset 4)
 
