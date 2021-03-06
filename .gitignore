@@ -9,7 +9,9 @@ eshell
 history
 tramp
 .emacs.desktop
-elpa/archives/melpa-stable/archive-contents
-elpa/archives/gnu/archive-contents
-elpa/archives/gnu/archive-contents.signed
+elpa/
+elpy/
+semanticdb/
+ebuild-mode/
 /.emacs.desktop.lock
+/ede-projects.el
