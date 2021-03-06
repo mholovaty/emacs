@@ -151,7 +151,7 @@
 (global-set-key (kbd "C-c 0") 'hs-hide-level)
 
 ;; hard-code black background
-(set-background-color "black")
+;; (set-background-color "black")
 
 ;; custom generated
 (custom-set-variables
