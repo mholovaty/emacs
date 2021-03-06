@@ -133,7 +133,7 @@
 
 (use-package elpy
   :init
-  (setq elpy-rpc-python-command "python3.6")
+  (setq elpy-rpc-python-command "python3.8")
   (setq python-shell-interpreter "ipython3"
 	python-shell-interpreter-args "-i --simple-prompt")
   ;; (setq elpy-rpc-backend "jedi")
