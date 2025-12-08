@@ -43,6 +43,9 @@
  kept-old-versions 2
  version-control t)
 
+;; Disable lockfiles '.#*'
+(setq create-lockfiles nil)
+
 ;; Local info
 (push "/usr/local/share/info" Info-directory-list)
 
@@ -130,12 +133,30 @@
 	     (add-hook 'python-mode-hook #'elpy-enable)
 	     (add-hook 'python-mode-hook #'hs-minor-mode))
 
+;; go-mode, lsp-mode, lsp-ui
+;; go install golang.org/x/tools/gopls@latest
+;; go install github.com/go-delve/delve/cmd/dlv@latest
+
+;; lsp-mode
+(require 'lsp-mode)
+(add-hook 'go-mode-hook #'lsp-deferred)
+
+;; Format and organize imports on save
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+;; Optional UI enhancements
+(require 'lsp-ui)
+(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+
 ;; disable python indent guessing
 (setq python-indent-guess-indent-offset nil)
 
 (use-package elpy
   :init
-  (setq elpy-rpc-python-command "python3.8")
+  (setq elpy-rpc-python-command "python3")
   (setq python-shell-interpreter "ipython3"
 	python-shell-interpreter-args "-i --simple-prompt")
   ;; (setq elpy-rpc-backend "jedi")
