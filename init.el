@@ -72,6 +72,9 @@
 (setq initial-major-mode 'text-mode)
 (setq initial-scratch-message "")
 
+;; windmove keybingings (shirt + arrows)
+(windmove-default-keybindings)
+
 ;; Show matching parens
 (show-paren-mode 1)
 
