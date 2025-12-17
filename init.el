@@ -59,6 +59,13 @@
 (setq desktop-restore-in-current-display t)
 (setq desktop-restore-forces-onscreen nil)
 
+;; persp-mode
+(use-package persp-mode
+  :init
+  (setq persp-autokill-buffer-on-remove 'kill-weak)
+  :config
+  (persp-mode 1))
+
 ;; Syntax highlighting is on
 (global-font-lock-mode 1)
 
@@ -136,13 +143,30 @@
 	     (add-hook 'python-mode-hook #'elpy-enable)
 	     (add-hook 'python-mode-hook #'hs-minor-mode))
 
+;; lsp-mode
+(require 'lsp-mode)
+
 ;; go-mode, lsp-mode, lsp-ui
 ;; go install golang.org/x/tools/gopls@latest
 ;; go install github.com/go-delve/delve/cmd/dlv@latest
 
-;; lsp-mode
-(require 'lsp-mode)
-(add-hook 'go-mode-hook #'lsp-deferred)
+;; yasnippet
+(require 'yasnippet)
+
+(require 'dape)
+
+;; go-mode
+(add-hook 'go-mode-hook
+	  (lambda ()
+            ;; Start LSP
+            (lsp-deferred)
+            ;; Set tab width to 4
+            (setq tab-width 4)
+            ;; Keep Go’s convention of using tabs
+            (setq indent-tabs-mode t)
+	    ;; yasnippet
+	    (yas-minor-mode)
+	    (hs-minor-mode)))
 
 ;; Format and organize imports on save
 (defun lsp-go-install-save-hooks ()
@@ -151,8 +175,24 @@
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 ;; Optional UI enhancements
-(require 'lsp-ui)
-(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+;;(require 'lsp-ui)
+;;(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+(use-package lsp-ui
+  :after lsp-mode
+  :config
+  (setq lsp-ui-doc-enable nil
+        lsp-ui-sideline-enable nil
+        lsp-enable-folding t))
+
+;; Optional UI enhancements
+;;(require 'lsp-ui)
+;;(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+(use-package lsp-ui
+  :after lsp-mode
+  :config
+  (setq lsp-ui-doc-enable nil
+        lsp-ui-sideline-enable nil
+        lsp-enable-folding t))
 
 ;; disable python indent guessing
 (setq python-indent-guess-indent-offset nil)
