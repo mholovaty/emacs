@@ -34,6 +34,12 @@
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
 (server-start)
 
+;; Mute sound
+(setq ring-bell-function 'ignore)
+
+;; Disable tool bar
+(tool-bar-mode -1)
+
 ;; Backup directory
 (setq
  backup-by-copying t
@@ -143,6 +149,9 @@
 	     (add-hook 'python-mode-hook #'elpy-enable)
 	     (add-hook 'python-mode-hook #'hs-minor-mode))
 
+;; Accept project variables
+(setq enable-local-variables :safe)
+
 ;; lsp-mode
 (require 'lsp-mode)
 
@@ -156,17 +165,18 @@
 (require 'dape)
 
 ;; go-mode
-(add-hook 'go-mode-hook
-	  (lambda ()
-            ;; Start LSP
-            (lsp-deferred)
-            ;; Set tab width to 4
-            (setq tab-width 4)
-            ;; Keep Go’s convention of using tabs
-            (setq indent-tabs-mode t)
-	    ;; yasnippet
-	    (yas-minor-mode)
-	    (hs-minor-mode)))
+(add-hook
+ 'go-mode-hook
+ (lambda ()
+   ;; Start LSP
+   (lsp-deferred)
+   ;; Set tab width to 4
+   (setq tab-width 4)
+   ;; Keep Go’s convention of using tabs
+   (setq indent-tabs-mode t)
+   ;; yasnippet
+   (yas-minor-mode)
+   (hs-minor-mode)))
 
 ;; Format and organize imports on save
 (defun lsp-go-install-save-hooks ()
@@ -208,6 +218,39 @@
   ;; 		       elpy-module-sane-defaults
   ;; 		       elpy-module-pyvenv))
   )
+
+;; Python Debug server
+;; pip install debugpy
+(use-package dap-mode
+  :commands dap-debug
+
+  :bind
+  (("C-c d" . dap-debug)
+   ("C-c k" . dap-disconnect)
+   ("C-c b" . dap-breakpoint-toggle)
+   ("C-c n" . dap-next)
+   ("C-c i" . dap-step-in)
+   ("C-c o" . dap-step-out)
+   ("C-c c" . dap-continue))
+
+  :config
+  (dap-auto-configure-mode)
+
+  ;; Core UI
+  (dap-ui-mode 1)
+  (dap-tooltip-mode 1)
+  (dap-ui-controls-mode 1)
+
+  ;; Optional: inline variable overlays tuning
+  (setq dap-auto-show-output t
+        dap-ui-variable-length 50
+        dap-ui-locals-expand-depth 3))
+
+(use-package dap-python
+  :after dap-mode
+  :config
+  (setq dap-python-debugger 'debugpy
+	dap-python-executable "python3"))
 
 ;; hs-minor-mode
 (global-set-key (kbd "C-c [") 'hs-hide-block)
