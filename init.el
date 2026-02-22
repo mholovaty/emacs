@@ -97,10 +97,38 @@
 ;; Display current culumn number
 (setq column-number-mode t)
 
+;; Delete trailing whitespace
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+
+;; neotree
+;; Does not jump to subtree once already open
+(setq neo-smart-open t)
+
 ;; CC modes
 (setq-default
  c-default-style "linux"
  c-basic-offset 4)
+
+(defun my-c-ff-find-other-file ()
+  (local-set-key (kbd "C-c C-f") #'ff-find-other-file))
+
+(add-hook 'c-mode-hook #'my-c-ff-find-other-file)
+(add-hook 'c++-mode-hook #'my-c-ff-find-other-file)
+
+;; clangd integration
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+
+;; Copilot
+(defun my/copilot-accept-or-eol ()
+  "Move to end of line, then accept Copilot completion if available."
+  (interactive)
+  (end-of-line)
+  (when (copilot--overlay-visible)
+    (copilot-accept-completion)))
+
+(with-eval-after-load 'copilot
+  (define-key copilot-mode-map (kbd "C-e") #'my/copilot-accept-or-eol))
 
 ;; nxml-mode
 ;; 4 space ident
