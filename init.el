@@ -307,7 +307,7 @@
  '(elpy-test-nose-runner-command '("nosetests --nocapture --nologcapture"))
  '(elpy-test-runner 'elpy-test-pytest-runner)
  '(package-selected-packages
-   '(imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
+   '(clang-format multiple-cursors yasnippet-snippets imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
