@@ -1,9 +1,11 @@
 ;; Emacs Initialization
 
+;; (setq package-check-signature nil)
+
 ;; Packages archive
 (require 'package)
 (add-to-list 'package-archives
-	     '("melpa-stable" . "https://stable.melpa.org/packages/"))
+	     '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 
 ;; use-package
@@ -111,6 +113,14 @@
 ;; Does not jump to subtree once already open
 (setq neo-smart-open t)
 
+;; vterm
+(add-to-list
+ 'load-path
+ (expand-file-name "emacs-libvterm" user-emacs-directory))
+(require 'vterm)
+;; ;; Fix ANSI blue not to be too dark
+(set-face-foreground 'vterm-color-blue "#5fafff")
+
 ;; CC modes
 (setq-default
  c-default-style "linux"
@@ -127,6 +137,8 @@
 (add-hook 'c++-mode-hook 'eglot-ensure)
 
 ;; Copilot
+;; curl -fsSL https://gh.io/copilot-install | bash
+;; sudo sudo npm install -g @github/copilot-language-server
 (defun my/copilot-accept-or-eol ()
   "Move to end of line, then accept Copilot completion if available."
   (interactive)
@@ -187,6 +199,14 @@
 ;; Accept project variables
 (setq enable-local-variables :safe)
 
+;; Accept .dir-locals.el
+;; ((dired-mode
+;;  (dired-listing-switches . "-alh --group-directories-first -t")))
+(put 'dired-listing-switches 'safe-local-variable #'stringp)
+
+;; Enable side-by-side 'C' copy in dired
+(setq dired-dwim-target t)
+
 ;; lsp-mode
 (require 'lsp-mode)
 
@@ -198,6 +218,8 @@
 (require 'yasnippet)
 
 (require 'dape)
+;; Mark dape-configs as safe so Emacs won't ask
+(put 'dape-configs 'safe-local-variable #'listp)
 
 ;; go-mode
 (add-hook
