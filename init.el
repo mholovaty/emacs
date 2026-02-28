@@ -149,6 +149,10 @@
 (add-hook 'c-mode-hook 'eglot-ensure)
 (add-hook 'c++-mode-hook 'eglot-ensure)
 
+;; eglot
+;; Disable Eglot for backup/auto-save files
+(add-to-list 'eglot-ignored-server-capabilities 'backup)
+
 ;; Copilot
 ;; curl -fsSL https://gh.io/copilot-install | bash
 ;; sudo sudo npm install -g @github/copilot-language-server
@@ -158,9 +162,11 @@
   (end-of-line)
   (when (copilot--overlay-visible)
     (copilot-accept-completion)))
-
+(global-set-key (kbd "C-c e") 'copilot-mode)
 (with-eval-after-load 'copilot
   (define-key copilot-mode-map (kbd "C-e") #'my/copilot-accept-or-eol))
+;; Set fallback indent to 4 spaces
+(setq copilot-indent-offset 4)
 
 ;; nxml-mode
 ;; 4 space ident
@@ -347,7 +353,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(wombat))
+ '(custom-enabled-themes '(modus-vivendi))
  '(elpy-test-nose-runner-command '("nosetests --nocapture --nologcapture"))
  '(elpy-test-runner 'elpy-test-pytest-runner)
  '(package-selected-packages
