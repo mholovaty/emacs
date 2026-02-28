@@ -196,10 +196,17 @@
   :ensure t
   :hook (dired-mode . dired-gitignore-mode))
 
-;; Auto-refresh all buffers when files change
+;; Auto-revert all buffers on externa files change
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)  ;; no "Reverting buffer..." messages
 (global-auto-revert-mode t)
+
+;; Prevent *Buffer List* from auto-reverting
+(defun my/no-auto-revert-buffer-list ()
+  (when (string= (buffer-name) "*Buffer List*")
+    (setq-local buffer-stale-function #'ignore)))
+
+(add-hook 'buffer-list-update-hook #'my/no-auto-revert-buffer-list)
 
 ;; geiser
 (setq geiser-active-implementations '(guile))
