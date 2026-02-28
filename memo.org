@@ -1,0 +1,26 @@
+* Emacs Commands Memo
+
+** Font Commands
+
+#+BEGIN_SRC lisp
+  (message "%s" (font-family-list))
+
+  (frame-parameter nil 'font)
+
+  (set-face-attribute 'default nil :family "Bitstream Vera Sans Mono" :height 90)
+  (set-face-attribute 'default nil :height 90)
+  (set-face-attribute 'default nil :font "-Bits-Bitstream Vera Sans Mono-regular-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+  (set-face-attribute 'default nil :font "-Bits-Bitstream Vera Sans Mono-regular-normal-normal-*-29-*-*-*-m-0-iso10646-1")
+
+  "-PfEd-Terminus-medium-normal-normal-*-12-*-*-*-c-*-iso10646-1"
+
+#+END_SRC
+
+** Multilangual Input
+| M-x set-input-method    |     |
+| M-x toggle-input-method | C-\ |
+
+
+** GDB
+| M-x gdb              |   |
+| M-x gdb-many-windows |   |
