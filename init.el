@@ -117,6 +117,14 @@
         neo-vc-ignore-messages t
 	neo-smart-open t ;; do not jump to subtree
         neo-show-hidden-files nil))
+(add-hook 'after-save-hook #'neotree-refresh)
+(setq neo-hidden-regexp-list
+      '("^\\.git$"
+        "^\\.mypy_cache$"
+        "^__pycache__$"
+        "^build$"
+        "^\\.pytest_cache$"))
+(global-set-key (kbd "C-c t") 'neotree-toggle)
 
 ;; vterm
 (add-to-list
