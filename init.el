@@ -173,6 +173,15 @@
 	  (lambda () (dired-hide-details-mode 1)))
 ;; Sort directories first
 (setq dired-listing-switches "-aBhl  --group-directories-first")
+;; Hide files listed in .gitignore
+(use-package dired-gitignore
+  :ensure t
+  :hook (dired-mode . dired-gitignore-mode))
+
+;; Auto-refresh all buffers when files change
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)  ;; no "Reverting buffer..." messages
+(global-auto-revert-mode t)
 
 ;; geiser
 (setq geiser-active-implementations '(guile))
@@ -325,11 +334,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(tsdh-dark))
+ '(custom-enabled-themes '(wombat))
  '(elpy-test-nose-runner-command '("nosetests --nocapture --nologcapture"))
  '(elpy-test-runner 'elpy-test-pytest-runner)
  '(package-selected-packages
-   '(clang-format multiple-cursors yasnippet-snippets imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
+   '(dired-gitignore clang-format multiple-cursors yasnippet-snippets imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
