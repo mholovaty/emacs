@@ -60,7 +60,7 @@
 ;; History
 (setq savehist-additional-variables
       '(kill-ring search-ring regexp-search-ring))
-(savehist-mode 1)
+(savehist-mode t)
 
 ;; desktop-save-mode
 (setq desktop-restore-frames t)
@@ -72,10 +72,10 @@
   :init
   (setq persp-autokill-buffer-on-remove 'kill-weak)
   :config
-  (persp-mode 1))
+  (persp-mode t))
 
 ;; Syntax highlighting is on
-(global-font-lock-mode 1)
+(global-font-lock-mode t)
 
 ;; Start-up screen is off
 (setq inhibit-startup-message t)
@@ -91,7 +91,7 @@
 (windmove-default-keybindings)
 
 ;; Show matching parens
-(show-paren-mode 1)
+(show-paren-mode t)
 
 ;; multiple-cursors
 (require 'multiple-cursors)
@@ -117,13 +117,16 @@
         neo-vc-ignore-messages t
 	neo-smart-open t ;; do not jump to subtree
         neo-show-hidden-files nil))
-(add-hook 'after-save-hook #'neotree-refresh)
+;; (add-hook 'after-save-hook #'neotree-refresh)
+;; (remove-hook 'after-save-hook #'neotree-refresh)
 (setq neo-hidden-regexp-list
       '("^\\.git$"
         "^\\.mypy_cache$"
         "^__pycache__$"
         "^build$"
-        "^\\.pytest_cache$"))
+        "^\\.pytest_cache$"
+	"^\\.ruff_cache/"
+	"\\.egg-info/?$"))
 (global-set-key (kbd "C-c t") 'neotree-toggle)
 
 ;; vterm
@@ -148,10 +151,6 @@
 ;; clangd integration
 (add-hook 'c-mode-hook 'eglot-ensure)
 (add-hook 'c++-mode-hook 'eglot-ensure)
-
-;; eglot
-;; Disable Eglot for backup/auto-save files
-(add-to-list 'eglot-ignored-server-capabilities 'backup)
 
 ;; Copilot
 ;; curl -fsSL https://gh.io/copilot-install | bash
@@ -189,7 +188,7 @@
 ;; dired-mode
 ;; Hide dired details by default
 (add-hook 'dired-mode-hook
-	  (lambda () (dired-hide-details-mode 1)))
+	  (lambda () (dired-hide-details-mode t)))
 ;; Sort directories first
 (setq dired-listing-switches "-aBhl  --group-directories-first")
 ;; Hide files listed in .gitignore
@@ -215,14 +214,6 @@
 
 (defun my-shell-mode-hook ()
   (local-set-key "\C-cw" 'my-resize-window))
-
-;; python-mode
-(use-package python-mode
-	     :mode ("\\.py\\'" . python-mode)
-	     :init
-	     (add-hook 'python-mode-hook #'elpy-mode)
-	     (add-hook 'python-mode-hook #'elpy-enable)
-	     (add-hook 'python-mode-hook #'hs-minor-mode))
 
 ;; Accept project variables
 (setq enable-local-variables :safe)
@@ -279,15 +270,8 @@
         lsp-ui-sideline-enable nil
         lsp-enable-folding t))
 
-;; Optional UI enhancements
-;;(require 'lsp-ui)
-;;(add-hook 'lsp-mode-hook 'lsp-ui-mode)
-(use-package lsp-ui
-  :after lsp-mode
-  :config
-  (setq lsp-ui-doc-enable nil
-        lsp-ui-sideline-enable nil
-        lsp-enable-folding t))
+
+;; Python related settings
 
 ;; disable python indent guessing
 (setq python-indent-guess-indent-offset nil)
@@ -303,6 +287,43 @@
   ;; 		       elpy-module-sane-defaults
   ;; 		       elpy-module-pyvenv))
   )
+
+;; eglot + python
+;; pip install pyright ruff
+;; There might be ruff-lsp version incompatibility.
+;;   pip3 install --user --break-system-packages \
+;;      "ruff-lsp" \
+;;      "lsprotocol==2023.0.0" \
+;;      "ruff"
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio"))))
+
+;; Start Eglot automatically when entering python-mode
+(add-hook 'python-mode-hook #'eglot-ensure)
+
+;; Format with ruff on save (pyright doesn't provide document formatting)
+(defun my/ruff-format-buffer ()
+  "Format current Python buffer with ruff."
+  (interactive)
+  (when (and buffer-file-name (executable-find "ruff"))
+    (let* ((orig (buffer-string))
+           (formatted
+            (with-temp-buffer
+              (insert orig)
+              (when (zerop (shell-command-on-region
+                            (point-min) (point-max)
+                            "ruff format --quiet -"
+                            (current-buffer) t "*ruff-errors*"))
+                (buffer-string)))))
+      (when (and formatted (not (string= orig formatted)))
+        (let ((p (point)))
+          (erase-buffer)
+          (insert formatted)
+          (goto-char (min p (point-max))))))))
+
+;; Make sure Emacs recognizes project roots
+(setq project-vc-extra-root-markers '("pyproject.toml" "setup.py" "requirements.txt"))
 
 ;; Python Debug server
 ;; pip install debugpy
@@ -322,9 +343,9 @@
   (dap-auto-configure-mode)
 
   ;; Core UI
-  (dap-ui-mode 1)
-  (dap-tooltip-mode 1)
-  (dap-ui-controls-mode 1)
+  (dap-ui-mode t)
+  (dap-tooltip-mode t)
+  (dap-ui-controls-mode t)
 
   ;; Optional: inline variable overlays tuning
   (setq dap-auto-show-output t
@@ -335,7 +356,7 @@
   :after dap-mode
   :config
   (setq dap-python-debugger 'debugpy
-	dap-python-executable "python3"))
+	dap-python-executable "ipython3"))
 
 ;; hs-minor-mode
 (global-set-key (kbd "C-c [") 'hs-hide-block)
@@ -343,6 +364,18 @@
 (global-set-key (kbd "C-c -") 'hs-hide-all)
 (global-set-key (kbd "C-c =") 'hs-show-all)
 (global-set-key (kbd "C-c 0") 'hs-hide-level)
+
+;; python-mode
+(use-package python-mode
+	     :mode ("\\.py\\'" . python-mode)
+	     :init
+	     (add-hook 'python-mode-hook (lambda () (add-hook 'before-save-hook #'my/ruff-format-buffer nil t)))
+	     ;; (add-hook 'python-mode-hook #'elpy-mode)
+	     ;; (add-hook 'python-mode-hook #'elpy-enable)
+	     (add-hook 'python-mode-hook #'hs-minor-mode))
+
+;; (remove-hook 'python-mode-hook #'elpy-mode)
+;; (remove-hook 'python-mode-hook #'elpy-enable)
 
 ;; hard-code black background
 ;; (set-background-color "black")
@@ -353,7 +386,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(modus-vivendi))
+ '(custom-enabled-themes '(tsdh-dark))
  '(elpy-test-nose-runner-command '("nosetests --nocapture --nologcapture"))
  '(elpy-test-runner 'elpy-test-pytest-runner)
  '(package-selected-packages
