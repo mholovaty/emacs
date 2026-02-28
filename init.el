@@ -110,8 +110,13 @@
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 
 ;; neotree
-;; Does not jump to subtree once already open
-(setq neo-smart-open t)
+(use-package neotree
+  :ensure t
+  :config
+  (setq neo-vc-integration '(face char)
+        neo-vc-ignore-messages t
+	neo-smart-open t ;; do not jump to subtree
+        neo-show-hidden-files nil))
 
 ;; vterm
 (add-to-list
