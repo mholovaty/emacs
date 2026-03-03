@@ -17,3 +17,5 @@ semanticdb/
 ebuild-mode/
 /.emacs.desktop.lock
 /ede-projects.el
+.dap-breakpoints
+.lsp-session-v1

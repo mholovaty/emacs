@@ -1,5 +1,20 @@
 * Emacs Commands Memo
 
+** Untaken keys exploration
+
+'free-keys' shows a list of combinations that are not yet bound
+
+#+BEGIN_SRC
+M-x package-install RET free-keys RET
+M-x free-keys RET
+#+END_SRC
+
+'which-keys' show taken keys after pressing C-x/C-x + something
+#+BEGIN_SRC
+M-x package-install RET which-key RET
+(which-key-mode)
+#+END_SRC
+
 ** Font Commands
 
 #+BEGIN_SRC lisp

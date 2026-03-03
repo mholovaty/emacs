@@ -366,11 +366,10 @@
 	dap-python-executable "ipython3"))
 
 ;; hs-minor-mode
-(global-set-key (kbd "C-c [") 'hs-hide-block)
-(global-set-key (kbd "C-c ]") 'hs-show-block)
-(global-set-key (kbd "C-c -") 'hs-hide-all)
-(global-set-key (kbd "C-c =") 'hs-show-all)
-(global-set-key (kbd "C-c 0") 'hs-hide-level)
+(global-set-key (kbd "C-c [") 'hs-hide-all)
+(global-set-key (kbd "C-c ]") 'hs-show-all)
+(global-set-key (kbd "C-c l") 'hs-hide-level)
+(global-set-key (kbd "C-c h") 'hs-toggle-hiding)
 
 ;; python-mode
 (use-package python-mode
@@ -397,7 +396,7 @@
  '(elpy-test-nose-runner-command '("nosetests --nocapture --nologcapture"))
  '(elpy-test-runner 'elpy-test-pytest-runner)
  '(package-selected-packages
-   '(dired-gitignore clang-format multiple-cursors yasnippet-snippets imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
+   '(yaml-mode free-keys which-key dired-gitignore clang-format multiple-cursors yasnippet-snippets imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
