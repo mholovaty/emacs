@@ -13,14 +13,31 @@
   (set-face-attribute 'default nil :font "-Bits-Bitstream Vera Sans Mono-regular-normal-normal-*-29-*-*-*-m-0-iso10646-1")
 
   "-PfEd-Terminus-medium-normal-normal-*-12-*-*-*-c-*-iso10646-1"
-
 #+END_SRC
 
+** Text Scale
+
+| C-x C-+ | text-scale-adjust |
+| C-x C-- | text-scale-adjust |
+| C-x C-0 | text-scale-adjust |
+| C-x C-= | text-scale-adjust |
+|         |                   |
+
+
 ** Multilangual Input
-| M-x set-input-method    |     |
-| M-x toggle-input-method | C-\ |
+|     | M-x set-input-method    |
+| C-\ | M-x toggle-input-method |
 
 
 ** GDB
-| M-x gdb              |   |
-| M-x gdb-many-windows |   |
+|   | M-x gdb              |
+|   | M-x gdb-many-windows |
+
+
+** File
+
+#+BEGIN_SRC lisp
+  (buffer-file-name)
+#+END_SRC
+
+|   | M-x neotree-show |

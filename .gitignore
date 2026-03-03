@@ -11,6 +11,8 @@ tramp
 .emacs.desktop
 elpa/
 elpy/
+eln-cache/
+transient/
 semanticdb/
 ebuild-mode/
 /.emacs.desktop.lock
