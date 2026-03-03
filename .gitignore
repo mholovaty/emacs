@@ -19,3 +19,4 @@ ebuild-mode/
 /ede-projects.el
 .dap-breakpoints
 .lsp-session-v1
+.mc-lists.el

@@ -39,6 +39,12 @@
 ;; Mute sound
 (setq ring-bell-function 'ignore)
 
+;; Windmove alternative keys (on top of shift+arrows)
+(global-set-key (kbd "C-,") 'windmove-left)
+(global-set-key (kbd "C-.") 'windmove-right)
+(global-set-key (kbd "M-p") 'windmove-up)
+(global-set-key (kbd "M-n") 'windmove-down)
+
 ;; Disable tool bar
 (tool-bar-mode -1)
 
