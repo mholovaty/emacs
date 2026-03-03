@@ -403,8 +403,16 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ediff-even-diff-A ((t (:background "brightblack"))))
- '(ediff-even-diff-B ((t (:background "brightblack"))))
- '(ediff-odd-diff-A ((t (:background "brightblack"))))
- '(ediff-odd-diff-B ((t (:background "brightblack"))))
+ ;; ediff: explicit foreground+background on all diff faces so text is always
+ ;; readable on the dark tsdh-dark theme.  Defaults assume a light background
+ ;; and leave foreground unset, causing invisible text on dark themes.
+ ;;   A = base/original buffer   B = changed buffer
+ '(ediff-current-diff-A ((t (:background "#3B3B6B" :foreground "#E0E0FF"))))
+ '(ediff-current-diff-B ((t (:background "#1E4620" :foreground "#C8E6C9"))))
+ '(ediff-even-diff-A    ((t (:background "#2D2D52" :foreground "#B0B0D8"))))
+ '(ediff-even-diff-B    ((t (:background "#1B3520" :foreground "#A0C8A0"))))
+ '(ediff-odd-diff-A     ((t (:background "#2D2D52" :foreground "#B0B0D8"))))
+ '(ediff-odd-diff-B     ((t (:background "#1B3520" :foreground "#A0C8A0"))))
+ '(ediff-fine-diff-A    ((t (:background "#7A5800" :foreground "#FFF0A0"))))
+ '(ediff-fine-diff-B    ((t (:background "#005050" :foreground "#A0F0F0"))))
  '(region ((t (:background "#555753" :foreground "#ffffff")))))
