@@ -142,6 +142,9 @@
 (require 'vterm)
 ;; ;; Fix ANSI blue not to be too dark
 (set-face-foreground 'vterm-color-blue "#5fafff")
+;; Fallback font for missing glyphs (e.g. Claude Code TUI uses U+23BF)
+;; sudo apt install -y fonts-unifont && fc-cache -f
+(set-fontset-font t nil "Unifont" nil 'append)
 
 ;; CC modes
 (setq-default
@@ -317,7 +320,9 @@
 ;;      "ruff"
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
-               '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio"))))
+               '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
+  (set-face-attribute 'eglot-highlight-symbol-face nil
+                      :background "#1c4a6e" :bold nil))
 
 ;; Start Eglot automatically when entering python-mode
 (add-hook 'python-mode-hook #'eglot-ensure)

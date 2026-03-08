@@ -17,12 +17,17 @@ M-x package-install RET which-key RET
 
 ** Font Commands
 
+# :height is in decipoints (1/10 of a point): 90 = 9pt, 100 = 10pt, 120 = 12pt
+# Fallback for missing glyphs: (set-fontset-font t nil "Unifont" nil 'append)
+# Install unifont: sudo apt install -y fonts-unifont && fc-cache -f
+
 #+BEGIN_SRC lisp
   (message "%s" (font-family-list))
 
   (frame-parameter nil 'font)
 
   (set-face-attribute 'default nil :family "Bitstream Vera Sans Mono" :height 90)
+  (set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 100)
   (set-face-attribute 'default nil :height 90)
   (set-face-attribute 'default nil :font "-Bits-Bitstream Vera Sans Mono-regular-normal-normal-*-24-*-*-*-m-0-iso10646-1")
   (set-face-attribute 'default nil :font "-Bits-Bitstream Vera Sans Mono-regular-normal-normal-*-29-*-*-*-m-0-iso10646-1")
