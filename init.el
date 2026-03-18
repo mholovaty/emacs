@@ -39,11 +39,26 @@
 ;; Mute sound
 (setq ring-bell-function 'ignore)
 
+;; Suppress debug-level warnings (e.g. flymake diagnostics spam)
+(setq warning-minimum-log-level :warning)
+
 ;; Windmove alternative keys (on top of shift+arrows)
 (global-set-key (kbd "C-,") 'windmove-left)
 (global-set-key (kbd "C-.") 'windmove-right)
 (global-set-key (kbd "M-p") 'windmove-up)
 (global-set-key (kbd "M-n") 'windmove-down)
+
+;; Enable mouse and copy&paste if in terminal
+(when (not (display-graphic-p))
+  (xterm-mouse-mode t)
+  (xclip-mode t)
+  (global-company-mode -1)
+  (global-eldoc-mode -1)
+  (add-hook 'eglot-managed-mode-hook (lambda () (eldoc-mode -1))))
+
+;; Enable full color support if env variable is set
+;; (when (string= (getenv "COLORTERM") "truecolor")
+;;   (set-terminal-coding-system 'utf-8))
 
 ;; Disable tool bar
 (tool-bar-mode -1)
@@ -147,9 +162,16 @@
 (set-fontset-font t nil "Unifont" nil 'append)
 
 ;; CC modes
-(setq-default
- c-default-style "linux"
- c-basic-offset 4)
+(setq c-default-style '((c-mode    . "linux")
+                         (c++-mode  . "k&r")
+                         (other     . "linux")))
+(setq-default c-basic-offset 4)
+
+;; Ensure .cpp/.hpp always open in c++-mode
+(add-to-list 'auto-mode-alist '("\\.cpp\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.cc\\'"  . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.hh\\'"  . c++-mode))
 
 (defun my-c-ff-find-other-file ()
   (local-set-key (kbd "C-c C-f") #'ff-find-other-file))
