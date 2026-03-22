@@ -344,7 +344,10 @@
   (add-to-list 'eglot-server-programs
                '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
   (set-face-attribute 'eglot-highlight-symbol-face nil
-                      :background "#1c4a6e" :bold nil))
+                      :background "#1c4a6e" :bold nil)
+  (keymap-set eglot-mode-map "C-c a" #'eglot-code-actions)
+  (keymap-set eglot-mode-map "C-c r" #'eglot-rename)
+  (keymap-set eglot-mode-map "C-c f" #'eglot-format))
 
 ;; Start Eglot automatically when entering python-mode
 (add-hook 'python-mode-hook #'eglot-ensure)
