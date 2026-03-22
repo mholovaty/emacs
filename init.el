@@ -150,6 +150,36 @@
 	"\\.egg-info/?$"))
 (global-set-key (kbd "C-c t") 'neotree-toggle)
 
+;; dasht — offline documentation browser
+;; Setup:
+;;   git clone https://github.com/sunaku/dasht ~/.local/share/dasht
+;;   ln -sf ~/.local/share/dasht/bin/dasht* ~/.local/bin/
+;;   sudo apt install -y sqlite3 w3m
+;;   dasht-docsets-install C
+;;   dasht-docsets-install 'C++'
+;;   dasht-docsets-install Python
+;;   dasht-docsets-install Go
+;;
+;; Usage:
+;;   C-c D     — pick match from list, open doc in eww buffer
+;;   C-u C-c D — prompt for custom query
+(defun my/dasht-at-point (arg)
+  "Look up symbol at point in dasht. With prefix ARG, prompt for query.
+Presents matches via completing-read, then opens the selected doc in eww."
+  (interactive "P")
+  (let* ((query (if arg
+                    (read-string "dasht query: ")
+                  (thing-at-point 'symbol t)))
+         (output (shell-command-to-string
+                  (format "dasht-query-line %s" (shell-quote-argument query))))
+         (lines (seq-filter #'identity (split-string output "\n")))
+         (choice (completing-read (format "dasht [%s]: " query) lines nil t))
+         (url (nth 3 (split-string choice "\t"))))
+    (when url
+      (eww url))))
+
+(global-set-key (kbd "C-c D") #'my/dasht-at-point)
+
 ;; vterm
 (add-to-list
  'load-path
@@ -450,7 +480,7 @@
  '(elpy-test-nose-runner-command '("nosetests --nocapture --nologcapture"))
  '(elpy-test-runner 'elpy-test-pytest-runner)
  '(package-selected-packages
-   '(diff-hl yaml-mode free-keys which-key dired-gitignore clang-format multiple-cursors yasnippet-snippets imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
+   '(w3m dasht outshine diff-hl yaml-mode free-keys which-key dired-gitignore clang-format multiple-cursors yasnippet-snippets imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
