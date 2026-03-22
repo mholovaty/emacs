@@ -179,9 +179,20 @@
 (add-hook 'c-mode-hook #'my-c-ff-find-other-file)
 (add-hook 'c++-mode-hook #'my-c-ff-find-other-file)
 
+;; Don't let eglot log unboundedly — a full log buffer itself causes slowdowns
+(setq eglot-events-buffer-size 0)
+
+;; Throttle didChange notifications — don't send on every keystroke
+(setq eglot-send-changes-idle-time 0.5)
+
 ;; clangd integration
 (add-hook 'c-mode-hook 'eglot-ensure)
 (add-hook 'c++-mode-hook 'eglot-ensure)
+(add-hook 'eglot-managed-mode-hook
+          (lambda ()
+            (when (derived-mode-p 'c++-mode)
+              (add-hook 'before-save-hook #'eglot-format-buffer nil t))))
+
 
 ;; Copilot
 ;; curl -fsSL https://gh.io/copilot-install | bash
