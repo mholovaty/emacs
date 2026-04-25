@@ -15,6 +15,11 @@
 
 (require 'use-package)
 
+;; Auto-install missing packages
+(setq use-package-always-ensure t)
+(unless package-archive-contents
+  (package-refresh-contents))
+
 ;; Auto-load configuration
 (defun load-directory (directory)
   "Load recursively all `.el' files in DIRECTORY."
@@ -115,7 +120,7 @@
 (show-paren-mode t)
 
 ;; multiple-cursors
-(require 'multiple-cursors)
+(use-package multiple-cursors :demand t)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
@@ -181,15 +186,14 @@ Presents matches via completing-read, then opens the selected doc in eww."
 (global-set-key (kbd "C-c D") #'my/dasht-at-point)
 
 ;; vterm
-(add-to-list
- 'load-path
- (expand-file-name "emacs-libvterm" user-emacs-directory))
-(require 'vterm)
-;; ;; Fix ANSI blue not to be too dark
-(set-face-foreground 'vterm-color-blue "#5fafff")
-;; Fallback font for missing glyphs (e.g. Claude Code TUI uses U+23BF)
-;; sudo apt install -y fonts-unifont && fc-cache -f
-(set-fontset-font t nil "Unifont" nil 'append)
+(use-package vterm
+  :demand t
+  :config
+  ;; Fix ANSI blue not to be too dark
+  (set-face-foreground 'vterm-color-blue "#5fafff")
+  ;; Fallback font for missing glyphs (e.g. Claude Code TUI uses U+23BF)
+  ;; sudo apt install -y fonts-unifont && fc-cache -f
+  (set-fontset-font t nil "Unifont" nil 'append))
 
 ;; CC modes
 (setq c-default-style '((c-mode    . "linux")
@@ -313,16 +317,16 @@ Presents matches via completing-read, then opens the selected doc in eww."
 (setq dired-dwim-target t)
 
 ;; lsp-mode
-(require 'lsp-mode)
+(use-package lsp-mode :demand t)
 
 ;; go-mode, lsp-mode, lsp-ui
 ;; go install golang.org/x/tools/gopls@latest
 ;; go install github.com/go-delve/delve/cmd/dlv@latest
 
 ;; yasnippet
-(require 'yasnippet)
+(use-package yasnippet :demand t)
 
-(require 'dape)
+(use-package dape :demand t)
 ;; Mark dape-configs as safe so Emacs won't ask
 (put 'dape-configs 'safe-local-variable #'listp)
 
@@ -444,6 +448,7 @@ Presents matches via completing-read, then opens the selected doc in eww."
         dap-ui-locals-expand-depth 3))
 
 (use-package dap-python
+  :ensure nil  ;; bundled with dap-mode, not a separate package
   :after dap-mode
   :config
   (setq dap-python-debugger 'debugpy
