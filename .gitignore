@@ -20,3 +20,4 @@ ebuild-mode/
 .dap-breakpoints
 .lsp-session-v1
 .mc-lists.el
+/trusted-directories

@@ -61,3 +61,17 @@ M-x package-install RET which-key RET
 #+END_SRC
 
 |   | M-x neotree-show |
+
+** Local Variables (.dir-locals.el)
+
+Only safe local variables apply, without asking (=enable-local-variables :safe=).
+Under a trusted directory everything applies, =eval= included.
+
+- List trusted directories one per line in =~/.emacs.d/trusted-directories= (not in git; =~= and =#= comments allowed)
+- Takes effect on the next file visit or =M-x revert-buffer=
+- A running =*Python*= keeps its old interpreter: kill it before =run-python=
+
+#+BEGIN_SRC lisp
+  (my/trusted-directory-p default-directory)
+  (list python-shell-interpreter python-shell-virtualenv-root)
+#+END_SRC

@@ -222,6 +222,12 @@ Presents matches via completing-read, then opens the selected doc in eww."
 ;; clangd integration
 (add-hook 'c-mode-hook 'eglot-ensure)
 (add-hook 'c++-mode-hook 'eglot-ensure)
+
+;; C23 keywords not yet known to Emacs font-lock
+(font-lock-add-keywords 'c-mode
+  '(("\\bnullptr\\b"  . font-lock-keyword-face)
+    ("\\btypeof\\b"   . font-lock-keyword-face)
+    ("\\bconstexpr\\b" . font-lock-keyword-face)))
 (add-hook 'eglot-managed-mode-hook
           (lambda ()
             (when (derived-mode-p 'c++-mode)
@@ -305,8 +311,31 @@ Presents matches via completing-read, then opens the selected doc in eww."
 (defun my-shell-mode-hook ()
   (local-set-key "\C-cw" 'my-resize-window))
 
-;; Accept project variables
+;; Local variables: apply only safe ones, never ask...
 (setq enable-local-variables :safe)
+
+;; ...except under trusted directories, which apply everything.
+;; List them one per line in trusted-directories (not in git).
+(defvar my/trusted-directories-file (locate-user-emacs-file "trusted-directories"))
+
+(defun my/trusted-directories ()
+  (when (file-readable-p my/trusted-directories-file)
+    (with-temp-buffer
+      (insert-file-contents my/trusted-directories-file)
+      (seq-remove (lambda (line) (string-prefix-p "#" line))
+                  (split-string (buffer-string) "\n" t "[ \t]+")))))
+
+(defun my/trusted-directory-p (dir)
+  (seq-some (lambda (root) (file-in-directory-p dir root)) (my/trusted-directories)))
+
+(defun my/trust-local-variables (fn &rest args)
+  (if (my/trusted-directory-p default-directory)
+      (let ((enable-local-variables :all)
+            (enable-local-eval t))
+        (apply fn args))
+    (apply fn args)))
+
+(advice-add 'hack-local-variables-filter :around #'my/trust-local-variables)
 
 ;; Accept .dir-locals.el
 ;; ((dired-mode
@@ -329,6 +358,7 @@ Presents matches via completing-read, then opens the selected doc in eww."
 (use-package dape :demand t)
 ;; Mark dape-configs as safe so Emacs won't ask
 (put 'dape-configs 'safe-local-variable #'listp)
+(put 'my/disable-ruff-format 'safe-local-variable #'booleanp)
 
 ;; go-mode
 (add-hook
@@ -398,10 +428,13 @@ Presents matches via completing-read, then opens the selected doc in eww."
 (add-hook 'python-mode-hook #'eglot-ensure)
 
 ;; Format with ruff on save (pyright doesn't provide document formatting)
+(defvar-local my/disable-ruff-format nil
+  "Set to t in .dir-locals.el to disable ruff autoformat for a project.")
+
 (defun my/ruff-format-buffer ()
   "Format current Python buffer with ruff."
   (interactive)
-  (when (and buffer-file-name (executable-find "ruff"))
+  (when (and buffer-file-name (executable-find "ruff") (not my/disable-ruff-format))
     (let* ((orig (buffer-string))
            (formatted
             (with-temp-buffer
@@ -452,7 +485,7 @@ Presents matches via completing-read, then opens the selected doc in eww."
   :after dap-mode
   :config
   (setq dap-python-debugger 'debugpy
-	dap-python-executable "ipython3"))
+	dap-python-executable "python3"))
 
 ;; hs-minor-mode
 (global-set-key (kbd "C-c [") 'hs-hide-all)
