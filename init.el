@@ -20,6 +20,15 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
+;; A failed install usually means a stale index: refresh once and retry
+(defun my/package-install-refresh-retry (install &rest args)
+  (condition-case nil
+      (apply install args)
+    (error
+     (package-refresh-contents)
+     (apply install args))))
+(advice-add 'package-install :around #'my/package-install-refresh-retry)
+
 ;; Auto-load configuration
 (defun load-directory (directory)
   "Load recursively all `.el' files in DIRECTORY."
@@ -169,6 +178,9 @@
 ;; Delete trailing whitespace
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 
+;; Render ANSI colour escapes in *compilation* (comint buffers already do)
+(add-hook 'compilation-filter-hook #'ansi-color-compilation-filter)
+
 ;; neotree
 (use-package neotree
   :ensure t
@@ -221,6 +233,8 @@ Presents matches via completing-read, then opens the selected doc in eww."
 
 ;; vterm
 (use-package vterm
+  :ensure nil  ;; local build in emacs-libvterm/, not from ELPA
+  :load-path "emacs-libvterm"
   :demand t
   :config
   ;; Fix ANSI blue not to be too dark
@@ -518,7 +532,7 @@ Presents matches via completing-read, then opens the selected doc in eww."
  '(elpy-test-nose-runner-command '("nosetests --nocapture --nologcapture"))
  '(elpy-test-runner 'elpy-test-pytest-runner)
  '(package-selected-packages
-   '(w3m dasht outshine diff-hl yaml-mode free-keys which-key dired-gitignore clang-format multiple-cursors yasnippet-snippets imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
+   '(python-mode vterm w3m dasht outshine diff-hl yaml-mode free-keys which-key dired-gitignore clang-format multiple-cursors yasnippet-snippets imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
