@@ -88,6 +88,40 @@
       '(kill-ring search-ring regexp-search-ring))
 (savehist-mode t)
 
+;; Local variables: apply only safe ones, never ask...
+;; Must come before persp-mode/desktop, which revisit files during init.
+(setq enable-local-variables :safe)
+
+;; ...except under trusted directories, which apply everything.
+;; List them one per line in trusted-directories (not in git).
+(defvar my/trusted-directories-file (locate-user-emacs-file "trusted-directories"))
+
+(defun my/trusted-directories ()
+  (when (file-readable-p my/trusted-directories-file)
+    (with-temp-buffer
+      (insert-file-contents my/trusted-directories-file)
+      (seq-remove (lambda (line) (string-prefix-p "#" line))
+                  (split-string (buffer-string) "\n" t "[ \t]+")))))
+
+(defun my/trusted-directory-p (dir)
+  (seq-some (lambda (root) (file-in-directory-p dir root)) (my/trusted-directories)))
+
+(defun my/trust-local-variables (fn variables dir-name)
+  (if (my/trusted-directory-p (or dir-name default-directory))
+      (let ((enable-local-variables :all)
+            (enable-local-eval t))
+        (funcall fn variables dir-name))
+    (funcall fn variables dir-name)))
+
+(advice-add 'hack-local-variables-filter :around #'my/trust-local-variables)
+
+;; Safe local variables (applied everywhere, e.g. from .dir-locals.el)
+;; ((dired-mode
+;;  (dired-listing-switches . "-alh --group-directories-first -t")))
+(put 'dired-listing-switches 'safe-local-variable #'stringp)
+(put 'dape-configs 'safe-local-variable #'listp)
+(put 'my/disable-ruff-format 'safe-local-variable #'booleanp)
+
 ;; desktop-save-mode
 (setq desktop-restore-frames t)
 (setq desktop-restore-in-current-display t)
@@ -311,37 +345,6 @@ Presents matches via completing-read, then opens the selected doc in eww."
 (defun my-shell-mode-hook ()
   (local-set-key "\C-cw" 'my-resize-window))
 
-;; Local variables: apply only safe ones, never ask...
-(setq enable-local-variables :safe)
-
-;; ...except under trusted directories, which apply everything.
-;; List them one per line in trusted-directories (not in git).
-(defvar my/trusted-directories-file (locate-user-emacs-file "trusted-directories"))
-
-(defun my/trusted-directories ()
-  (when (file-readable-p my/trusted-directories-file)
-    (with-temp-buffer
-      (insert-file-contents my/trusted-directories-file)
-      (seq-remove (lambda (line) (string-prefix-p "#" line))
-                  (split-string (buffer-string) "\n" t "[ \t]+")))))
-
-(defun my/trusted-directory-p (dir)
-  (seq-some (lambda (root) (file-in-directory-p dir root)) (my/trusted-directories)))
-
-(defun my/trust-local-variables (fn &rest args)
-  (if (my/trusted-directory-p default-directory)
-      (let ((enable-local-variables :all)
-            (enable-local-eval t))
-        (apply fn args))
-    (apply fn args)))
-
-(advice-add 'hack-local-variables-filter :around #'my/trust-local-variables)
-
-;; Accept .dir-locals.el
-;; ((dired-mode
-;;  (dired-listing-switches . "-alh --group-directories-first -t")))
-(put 'dired-listing-switches 'safe-local-variable #'stringp)
-
 ;; Enable side-by-side 'C' copy in dired
 (setq dired-dwim-target t)
 
@@ -356,9 +359,6 @@ Presents matches via completing-read, then opens the selected doc in eww."
 (use-package yasnippet :demand t)
 
 (use-package dape :demand t)
-;; Mark dape-configs as safe so Emacs won't ask
-(put 'dape-configs 'safe-local-variable #'listp)
-(put 'my/disable-ruff-format 'safe-local-variable #'booleanp)
 
 ;; go-mode
 (add-hook
