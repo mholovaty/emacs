@@ -141,6 +141,18 @@
   :init
   (setq persp-autokill-buffer-on-remove 'kill-weak)
   :config
+  ;; Special UI buffers (magit etc.) get restored as empty fundamental-mode
+  ;; zombies; kill them once the workspace is loaded.
+  (add-hook 'persp-after-load-state-functions
+            (lambda (&rest _)
+              (dolist (b (buffer-list))
+                (with-current-buffer b
+                  (when (and (eq major-mode 'fundamental-mode)
+                             (not buffer-file-name)
+                             (zerop (buffer-size))
+                             (not (string-prefix-p " " (buffer-name))))
+                    (kill-buffer b)))))
+            t)
   (persp-mode t))
 
 ;; Syntax highlighting is on
