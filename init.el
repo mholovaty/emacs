@@ -43,6 +43,11 @@
        ((and (eq isdir nil) (string= (substring path -3) ".el"))
 	(load (file-name-sans-extension fullpath)))))))
 
+;; Emacs 31.1 hideshow on Emacs 30 (30's hs-hide-all stops at the first inline
+;; comment in Python); drops out automatically once Emacs itself is 31+
+(when (< emacs-major-version 31)
+  (add-to-list 'load-path (expand-file-name "lisp/hideshow-31" user-emacs-directory)))
+
 (load-directory "~/.emacs.d/config")
 
 ;; Run server
@@ -527,10 +532,37 @@ Presents matches via completing-read, then opens the selected doc in eww."
 	dap-python-executable "python3"))
 
 ;; hs-minor-mode
-(global-set-key (kbd "C-c [") 'hs-hide-all)
-(global-set-key (kbd "C-c ]") 'hs-show-all)
+;; clickable ▾/▸ fold markers in the fringe on every foldable block
+(setq hs-show-indicators t)
+
+;; Flymake's map comes before hideshow's and also takes the left-fringe click;
+;; toggle the fold when the clicked line has a fold marker, else defer to Flymake
+(defun my/fringe-mouse-1 (event)
+  "Toggle the hideshow block of the clicked fringe line, else show Flymake diagnostics."
+  (interactive "e")
+  (let ((posn (event-end event)))
+    (if (with-current-buffer (window-buffer (posn-window posn))
+          (and (bound-and-true-p hs-minor-mode)
+               (save-excursion
+                 (goto-char (posn-point posn))
+                 (seq-some (lambda (ov) (overlay-get ov 'hs-indicator-block-start))
+                           (overlays-in (pos-bol) (pos-eol))))))
+        (hs-indicator-mouse-toggle-hiding event)
+      (call-interactively #'flymake-show-buffer-diagnostics))))
+
+(with-eval-after-load 'flymake
+  (keymap-set flymake-mode-map "<left-fringe> <mouse-1>" #'my/fringe-mouse-1))
+(global-set-key (kbd "C-c [") 'hs-show-all)
+(global-set-key (kbd "C-c ]") 'hs-hide-all)
 (global-set-key (kbd "C-c l") 'hs-hide-level)
 (global-set-key (kbd "C-c h") 'hs-toggle-hiding)
+
+;; PyCharm-style navigation: Ctrl+click jumps to the definition (like M-.),
+;; back/forward with the mouse side buttons or Ctrl+Alt+Left/Right (like M-, / C-M-,)
+(keymap-global-unset "C-<down-mouse-1>")  ; was `mouse-buffer-menu'
+(keymap-global-set "C-<mouse-1>" #'xref-find-definitions-at-mouse)
+(keymap-global-set "<mouse-8>" #'xref-go-back)
+(keymap-global-set "<mouse-9>" #'xref-go-forward)
 
 ;; python-mode
 (use-package python-mode
