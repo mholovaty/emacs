@@ -332,6 +332,19 @@ Presents matches via completing-read, then opens the selected doc in eww."
 (use-package dired-gitignore
   :ensure t
   :hook (dired-mode . dired-gitignore-mode))
+;; Tree view: expand/collapse directories inline
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :bind (:map dired-mode-map
+	      ("<tab>" . dired-subtree-toggle)
+	      ("TAB" . dired-subtree-toggle)
+	      ("<backtab>" . dired-subtree-cycle)
+	      ("C-M-u" . dired-subtree-up)
+	      ("C-M-d" . dired-subtree-down))
+  :config
+  (setq dired-subtree-use-backgrounds nil
+	dired-subtree-line-prefix "  "))
 
 ;; Auto-revert all buffers on externa files change
 (setq global-auto-revert-non-file-buffers t)
@@ -532,7 +545,15 @@ Presents matches via completing-read, then opens the selected doc in eww."
  '(elpy-test-nose-runner-command '("nosetests --nocapture --nologcapture"))
  '(elpy-test-runner 'elpy-test-pytest-runner)
  '(package-selected-packages
-   '(python-mode vterm w3m dasht outshine diff-hl yaml-mode free-keys which-key dired-gitignore clang-format multiple-cursors yasnippet-snippets imenu-list eglot meson-mode copilot dap-mode dape persp-mode lsp-ui lsp-mode go-mode elpy gdscript-mode gnu-elpa-keyring-update ztree xclip json-mode flymake-json flymake-jslint cmake-mode csv-mode vlf cmake-project neotree paredit geiser markdown-mode magit dockerfile-mode)))
+   '(clang-format cmake-mode cmake-project copilot csv-mode dap-mode dape
+		  dasht diff-hl dired-gitignore dired-subtree
+		  dockerfile-mode eglot elpy flymake-jslint
+		  flymake-json free-keys gdscript-mode geiser
+		  gnu-elpa-keyring-update go-mode imenu-list json-mode
+		  lsp-mode lsp-ui magit markdown-mode meson-mode
+		  multiple-cursors neotree outshine paredit persp-mode
+		  python-mode vlf vterm w3m which-key xclip yaml-mode
+		  yasnippet-snippets ztree)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
