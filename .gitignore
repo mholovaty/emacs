@@ -21,3 +21,12 @@ ebuild-mode/
 .lsp-session-v1
 .mc-lists.el
 /trusted-directories
+
+# local state and build output
+/dap-ui-repl-python-history
+/persp-confs/
+/projectile-bookmarks.eld
+/projects
+/tutorial/
+/tree-sitter/
+/emacs-libvterm/
